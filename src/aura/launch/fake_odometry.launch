@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+    <group ns="aura">
+    <node pkg="fake_odometry" type="fake_odometry1" name="fake_odom" output="screen" respawn="false">
+        <param name="odom_topic" type="string" value="odom"/>
+        <param name="cmd_topic" type="string" value="/cmd_vel_mux/input/navi"/>
+        <param name="hz" type="double" value="1000"/>
+        <param name="initial_x" type="double" value="0.0"/>
+        <param name="initial_y" type="double" value="0.0"/>
+        <param name="initial_theta" type="double" value="0.0"/>
+        <param name="odom_frame" type="string" value="/aura/odom"/>
+        <param name="child_frame" type="string" value="/aura/base_footprint"/>
+    </node>
+    </group>
+</launch>

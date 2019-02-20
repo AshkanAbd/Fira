@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <group ns="aura">
+    <node pkg="aura" type="auto_move.py" name="auto_move" output="screen"/>
+    </group>
+</launch>

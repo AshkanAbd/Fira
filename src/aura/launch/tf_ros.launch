@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <group ns="aura">
+        <param name="robot_description"
+               command="$(find xacro)/xacro.py '$(find turtlebot_description)/robots/kobuki_hexagons_kinect.urdf.xacro'"/>
+        <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+            <param name="publish_frequency" type="double" value="30.0"/>
+            <param name="tf_prefix" type="string" value="aura"/>
+        </node>
+    </group>
+</launch>
+
