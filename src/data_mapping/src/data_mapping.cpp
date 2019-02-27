@@ -11,9 +11,12 @@ DataMapping::DataMapping(const std::string &map_frame, const std::string &odom_f
         DataMapping::nh = nh;
     }
     DataMapping::rate = new ros::Rate(hz);
+    DataMapping::map_frame = map_frame;
+    DataMapping::odom_frame = odom_frame;
     DataMapping::initialize_map(map_frame, map_height, map_width, resolution, initial_x, initial_y);
     map_publisher = new ros::Publisher(DataMapping::nh->advertise<nav_msgs::OccupancyGrid>(publish_topic, 1000));
     new std::thread(&DataMapping::publish_thread, this);
+    new std::thread(&DataMapping::tf_thread, this);
     state_sub = new ros::Subscriber(DataMapping::nh->subscribe(state_topic, 1000, &DataMapping::get_state, this));
 }
 
@@ -21,17 +24,16 @@ void DataMapping::get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg) {
     for (int i = 0; i < state_msg->name.size(); i++) {
         if ((state_msg->name.data() + i)->find("newbox") == std::string::npos) continue;
         auto box_pos = (state_msg->pose.data() + i)->position;
-        auto poses = (ulong *) malloc(2 * sizeof(ulong));
-        data_mapping::convert(box_pos.y, box_pos.x, poses, DataMapping::publish_obj);
-        for (int j = -3; j <= 3; j++) {
-            for (int k = -3; k <= 3; k++) {
-                auto pose_y = (*(poses + 0) + j);
-                auto pose_x = (*(poses + 1) + k);
-                if (pose_x < map_width && pose_y < map_height) {
-                    auto pose = (pose_y * DataMapping::publish_obj->info.width) + pose_x;
+        for (double j = -0.25; j <= 0.25; j = j + 0.01) {
+            for (double k = -0.25; k <= 0.25; k = k + 0.01) {
+                auto poses = (ulong *) malloc(2 * sizeof(ulong));
+                data_mapping::convert(box_pos.y + j, box_pos.x + k, poses, DataMapping::publish_obj);
+                if (*(poses + 0) < map_height && *(poses + 1) < map_width) {
+                    auto pose = (*(poses + 0) * DataMapping::publish_obj->info.width) + *(poses + 1);
                     if (pose < DataMapping::map_size)
                         *(arr + pose) = 100;
-                }
+                    else printf("skip");
+                } else printf("skip 1");
             }
         }
     }
@@ -62,6 +64,18 @@ void DataMapping::publish_thread() {
         DataMapping::publish_obj->header.stamp = ros::Time::now();
         DataMapping::map_publisher->publish(*DataMapping::publish_obj);
         rate->sleep();
+    }
+}
+
+void DataMapping::tf_thread() {
+    tf::TransformBroadcaster broadcaster;
+    tf::Transform transform;
+    transform.setOrigin(tf::Vector3(0, 0, 0));
+    transform.setRotation(tf::Quaternion(0, 0, 0, 1));
+    ros::Rate tf_rate(100);
+    while (ros::ok()) {
+        broadcaster.sendTransform(tf::StampedTransform(transform, ros::Time::now(), map_frame, odom_frame));
+        tf_rate.sleep();
     }
 }
 

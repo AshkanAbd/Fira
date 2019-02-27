@@ -6,6 +6,7 @@
 #include <thread>
 #include <nav_msgs/OccupancyGrid.h>
 #include <gazebo_msgs/ModelStates.h>
+#include <tf/transform_broadcaster.h>
 
 namespace data_mapping {
     class DataMapping {
@@ -17,6 +18,7 @@ namespace data_mapping {
         nav_msgs::OccupancyGridPtr publish_obj;
         char *arr;
         uint map_size, map_height, map_width;
+        std::string map_frame, odom_frame;
 
     public:
 
@@ -30,6 +32,8 @@ namespace data_mapping {
                                     float initial_x, float initial_y);
 
         virtual void spin();
+
+        virtual void tf_thread();
 
         virtual void publish_thread();
 
