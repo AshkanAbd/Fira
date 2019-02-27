@@ -87,6 +87,36 @@ int main(int argc, char **argv) {
     float resolution = 0.1f;
     float initial_x = -0.8f;
     float initial_y = -2.0f;
+    if (nh->hasParam(ros::this_node::getName() + "/map_topic")) {
+        nh->getParam(ros::this_node::getName() + "/map_topic", map_topic);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/map_frame")) {
+        nh->getParam(ros::this_node::getName() + "/map_frame", map_frame);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/odom_frame")) {
+        nh->getParam(ros::this_node::getName() + "/odom_frame", odom_frame);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/model_topic")) {
+        nh->getParam(ros::this_node::getName() + "/model_topic", model_topic);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/hz")) {
+        nh->getParam(ros::this_node::getName() + "/hz", hz);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/height")) {
+        nh->getParam(ros::this_node::getName() + "/height", map_height);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/width")) {
+        nh->getParam(ros::this_node::getName() + "/width", map_width);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/resolution")) {
+        nh->getParam(ros::this_node::getName() + "/resolution", resolution);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/initial_x")) {
+        nh->getParam(ros::this_node::getName() + "/initial_x", initial_x);
+    }
+    if (nh->hasParam(ros::this_node::getName() + "/initial_y")) {
+        nh->getParam(ros::this_node::getName() + "/initial_y", initial_y);
+    }
     DataMapping data_mapping(map_frame, odom_frame, map_topic, model_topic, hz, nh,
                              static_cast<uint>(map_height / resolution), static_cast<uint>(map_width / resolution),
                              resolution, initial_x, initial_y);
