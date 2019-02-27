@@ -1,4 +1,4 @@
-<?xml vestion="1.0"?>
+<?xml version="1.0"?>
 <launch>
     <node pkg="data_mapping" type="data_mapping" name="data_mapping" respawn="true" output="screen">
         <param name="map_frame" type="string" value="/map"/>
