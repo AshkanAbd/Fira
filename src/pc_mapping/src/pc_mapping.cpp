@@ -104,25 +104,26 @@ void PCMapping::get_point_cloud(const sensor_msgs::PointCloud2ConstPtr &msg) {
         float z = *reinterpret_cast<const float *>(ptr + zoff);
         if (validateFloats(x) && validateFloats(y) && validateFloats(z)) {
             ulong pose_map[2];
-            convert(y, x, pose_map, PCMapping::map_obj);
-            if (*(pose_map + 0) > PCMapping::map_height || *(pose_map + 1) > PCMapping::map_width) {
-                continue;
-            }
-            auto pose = convert(y, x, PCMapping::map_obj);
-            if (z < min_tolerance) {
-                if (*(tmp_map + pose) == -1) {
-                    *(tmp_map + pose) = 0;
+            pc_mapping::convert(y, x, pose_map, PCMapping::map_obj);
+            if (*(pose_map + 0) < PCMapping::map_height && *(pose_map + 1) < PCMapping::map_width) {
+                auto pose = convert(y, x, PCMapping::map_obj);
+                if (pose < PCMapping::map_size) {
+                    if (z < min_tolerance) {
+                        if (*(tmp_map + pose) == -1) {
+                            *(tmp_map + pose) = 0;
+                        }
+                    } else if (z >= min_tolerance && z < max_tolerance) {
+                        if (*(tmp_map + pose) != 10) {
+                            *(tmp_map + pose) = 100;
+                        }
+                    } else if (z > max_tolerance) {
+                        *(tmp_map + pose) = 10;
+                    }
                 }
-            } else if (z >= min_tolerance && z < max_tolerance) {
-                if (*(tmp_map + pose) != 10) {
-                    *(tmp_map + pose) = 100;
-                }
-            } else if (z > max_tolerance) {
-                *(tmp_map + pose) = 10;
             }
         }
     }
-    apply_on_map(tmp_map, PCMapping::map_size, PCMapping::arr_obj);
+    pc_mapping::apply_on_map(tmp_map, PCMapping::map_size, PCMapping::arr_obj);
 }
 
 void pc_mapping::apply_on_map(const char *tmp_map, ulong map_size, char *arr_obj) {
