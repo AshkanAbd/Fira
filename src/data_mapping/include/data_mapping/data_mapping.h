@@ -16,7 +16,7 @@ namespace data_mapping {
         ros::Subscriber *state_sub;
         nav_msgs::OccupancyGridPtr publish_obj;
         char *arr;
-        uint map_size;
+        uint map_size, map_height, map_width;
 
     public:
 

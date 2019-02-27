@@ -25,8 +25,13 @@ void DataMapping::get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg) {
         data_mapping::convert(box_pos.y, box_pos.x, poses, DataMapping::publish_obj);
         for (int j = -3; j <= 3; j++) {
             for (int k = -3; k <= 3; k++) {
-                auto pose = ((*(poses + 0) + j) * DataMapping::publish_obj->info.width) + (*(poses + 1) + k);
-                *(arr + pose) = 100;
+                auto pose_y = (*(poses + 0) + j);
+                auto pose_x = (*(poses + 1) + k);
+                if (pose_x < map_width && pose_y < map_height) {
+                    auto pose = (pose_y * DataMapping::publish_obj->info.width) + pose_x;
+                    if (pose < DataMapping::map_size)
+                        *(arr + pose) = 100;
+                }
             }
         }
     }
@@ -34,6 +39,8 @@ void DataMapping::get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg) {
 
 void DataMapping::initialize_map(const std::string &map_frame, uint map_height, uint map_width, float resolution,
                                  float initial_x, float initial_y) {
+    DataMapping::map_height = map_height;
+    DataMapping::map_width = map_width;
     DataMapping::map_size = map_height * map_width;
     DataMapping::arr = (char *) malloc(DataMapping::map_size * sizeof(char));
     memset(arr, 0, map_size * sizeof(char));
