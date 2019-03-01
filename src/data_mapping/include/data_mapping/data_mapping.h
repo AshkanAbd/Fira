@@ -5,6 +5,7 @@
 #include <ros/ros.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include <gazebo_msgs/ModelStates.h>
+#include <thread>
 
 namespace data_mapping {
     class DataMapping {
@@ -14,12 +15,15 @@ namespace data_mapping {
         ros::Rate *rate;
         ros::Subscriber *state_sub;
         nav_msgs::OccupancyGridPtr publish_obj;
+        char *main_map;
 
     public:
         DataMapping(const ros::NodeHandlePtr &nh, const int &hz, const std::string &publish_topic,
                     const std::string &state_topic);
 
         void get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg);
+
+        void publish();
     };
 };
 

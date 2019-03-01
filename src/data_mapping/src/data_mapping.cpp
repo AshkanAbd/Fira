@@ -1,7 +1,3 @@
-#include <iostream>
-#include <ros/ros.h>
-#include <nav_msgs/OccupancyGrid.h>
-#include <gazebo_msgs/ModelStates.h>
 #include "../../data_mapping/include/data_mapping/data_mapping.h"
 
 using namespace data_mapping;
@@ -17,12 +13,18 @@ DataMapping::DataMapping(const ros::NodeHandlePtr &nh, const int &hz, const std:
     map_publisher = new ros::Publisher(DataMapping::nh->advertise<nav_msgs::OccupancyGrid>(publish_topic, 1000));
     state_sub = new ros::Subscriber(DataMapping::nh->subscribe(state_topic, 1000, &DataMapping::get_state, this));
     DataMapping::publish_obj = nav_msgs::OccupancyGridPtr(new nav_msgs::OccupancyGrid);
+    std::thread thread(&DataMapping::publish, this);
+    DataMapping::main_map = (char*)malloc(h*w*res* sizeof(char));
+    memset(DataMapping::main_map,0,w*h*res* sizeof(char));
 }
 
 void DataMapping::get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg) {
 
 }
 
-int main() {
+void DataMapping::publish() {
 
+}
+
+int main() {
 }
