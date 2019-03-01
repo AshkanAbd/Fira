@@ -7,16 +7,13 @@ import math
 
 class Controller:
     cmd_publisher = None
-    node_name = None
     rate = None
 
-    def __init__(self, node_name):
-        self.node_name = node_name
-        rospy.init_node(node_name)
-        self.cmd_publisher = rospy.Publisher('/cmd_vel_mux/input/navi', geometry_msgs.msg.Twist, queue_size=1)
+    def __init__(self, cmd_topic):
+        self.cmd_publisher = rospy.Publisher(cmd_topic, geometry_msgs.msg.Twist, queue_size=1)
         self.rate = rospy.Rate(10)
 
-    def publish(self, meter, degree):
+    def publish(self, meter, degree, time):
         twist = geometry_msgs.msg.Twist()
         twist.linear.x = meter
         twist.linear.y = 0
@@ -24,12 +21,12 @@ class Controller:
         twist.angular.x = 0
         twist.angular.y = 0
         twist.angular.z = math.radians(degree)
-        for i in xrange(10):
+        for i in xrange(time * 10):
             self.cmd_publisher.publish(twist)
             self.rate.sleep()
 
 
 if __name__ == '__main__':
-    control = Controller('controller')
-    control.publish( -0.5, 0)
+    control = Controller('/cmd_vel_mux/input/navi')
+    control.publish(-0.5, 0, 1)
     pass
