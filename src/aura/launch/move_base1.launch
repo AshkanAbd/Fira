@@ -9,7 +9,7 @@
 	     <!--rosparam file="$(find setup)/config/base_local_planner_params.yaml" command="load" /-->
 	  <remap from="cmd_vel" to="/cmd_vel_mux/input/navi"/>
       <remap from="map" to="base_map" />
-      <remap from="odom" to="fake_odom" />
+      <remap from="odom" to="odom" />
       <param name="base_global_planner" type="string" value="global_planner/GlobalPlanner" />
       <param name="base_local_planner" type="string" value="base_local_planner/TrajectoryPlannerROS" />
       <param name="conservative_reset_dist" type="double" value="3.0" />
@@ -19,8 +19,8 @@
         local_costmap:
           #footprint: [[0.28, 0.28], [-0.28, 0.28], [-0.28, -0.28], [0.28, -0.28]]
           robot_radius : 0.16
-          global_frame: odom
-          robot_base_frame: base_link
+          global_frame: aura/odom
+          robot_base_frame: aura/base_link
           static_map: false
           rolling_window: true
           width: 2
@@ -37,8 +37,8 @@
         global_costmap:
           #footprint: [[0.28, 0.28], [-0.28, 0.28], [-0.28, -0.28], [0.28, -0.28]]
           robot_radius : 0.16
-          global_frame: /map
-          robot_base_frame: base_link
+          global_frame: aura/map
+          robot_base_frame: aura/base_link
           resolution: 0.2
           static_map: true
           rolling_window: false

@@ -99,7 +99,7 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
 //                depth_detector::DepthDataSet depth_dst;
 //                if (depth_detector::closest_data(depth_src, depth_dst, RGBToPointCloud::depth_data_set,
 //                                                 RGBToPointCloud::depth_data_set_size)) {
-                    depth_detector::create_depth_image(depth_src, rect, depth_frame);
+                depth_detector::create_depth_image(depth_src, rect, depth_frame);
 //                }
             }
 //            }
@@ -183,8 +183,11 @@ int depth_detector::closest_data(const depth_detector::RGBDataSet &src, depth_de
         }
         current++;
     }
-    if (best == nullptr || min_difference > 1) {
+    if (best == nullptr) {
         best = data_set;
+        res = 0;
+    }
+    if (best->getImage_height() != src.getImage_height()) {
         res = 0;
     }
     dst = *best;
@@ -418,6 +421,6 @@ int main(int argc, char **argv) {
     }
     depth_detector::RGBToPointCloud rgb_to_pc(nh, rgb_topic, camera_info_topic, depth_image_topic, point_cloud_topic,
                                               data_set_dir, y_data_size, x_data_size, depth_data_size, color_lower,
-                                              color_upper,pc_frame);
+                                              color_upper, pc_frame);
     rgb_to_pc.spin();
 }

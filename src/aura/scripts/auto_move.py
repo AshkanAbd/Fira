@@ -6,6 +6,7 @@ import actionlib
 import nav_msgs.msg
 import geometry_msgs.msg
 import move_base_msgs.msg
+import Controller
 
 
 class SendGoal:
@@ -13,6 +14,8 @@ class SendGoal:
     move_base_goal = None
     client = None
     final_goal = ()
+    max_try = 5
+    reached = False
 
     def __init__(self, node_name='AutoMoveBase', map_topic="base_map"):
         rospy.init_node(node_name)
@@ -49,7 +52,15 @@ class SendGoal:
     def goal_status(self, data1, data2):
         print('goal status = ' + str(data1))
         if data1 != 3:
-            self.send_goal(self.final_goal[0], self.final_goal[1])
+            if self.max_try > 0:
+                self.max_try = self.max_try - 1
+                self.send_goal(self.final_goal[0], self.final_goal[1])
+        else:
+            if not self.reached:
+                controller = Controller.Controller('/cmd_vel_mux/input/navi')
+                controller.publish(0.5, 0, 4)
+                controller.publish(0, 0, 1)
+                self.reached = True
 
     def convert_from_robot_to_map(self, robot_y, robot_x):
         map_x = round((robot_x - self.map_info.info.origin.position.x) / self.map_info.info.resolution)
@@ -63,6 +74,6 @@ class SendGoal:
 
 
 if __name__ == '__main__':
-    auto_move = SendGoal('a','aura/base_map')
-    auto_move.set_goal(5.0, 0)
+    auto_move = SendGoal('a', 'aura/base_map')
+    auto_move.set_goal(5, 0)
     rospy.spin()
