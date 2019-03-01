@@ -27,11 +27,6 @@ class Controller:
 
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-    control = Controller('controller')
-    control.publish(-0.5, 0)
-=======
     control = Controller('/cmd_vel_mux/input/navi')
     control.publish(-0.5, 0, 1)
->>>>>>> f69d126eaa879bc74065d3c36d83c83ceb618e43
     pass

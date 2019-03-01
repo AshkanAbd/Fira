@@ -18,13 +18,6 @@ DataMapping::DataMapping(const std::string &map_frame, const std::string &odom_f
     new std::thread(&DataMapping::publish_thread, this);
     new std::thread(&DataMapping::tf_thread, this);
     state_sub = new ros::Subscriber(DataMapping::nh->subscribe(state_topic, 1000, &DataMapping::get_state, this));
-<<<<<<< HEAD
-    DataMapping::publish_obj = nav_msgs::OccupancyGridPtr(new nav_msgs::OccupancyGrid);
-    std::thread thread(&DataMapping::publish, this);
-    DataMapping::main_map = (char*)malloc(h*w*res* sizeof(char));
-    memset(DataMapping::main_map,0,w*h*res* sizeof(char));
-=======
->>>>>>> f69d126eaa879bc74065d3c36d83c83ceb618e43
 }
 
 void DataMapping::get_state(const gazebo_msgs::ModelStatesConstPtr &state_msg) {
@@ -74,13 +67,7 @@ void DataMapping::publish_thread() {
     }
 }
 
-<<<<<<< HEAD
-void DataMapping::publish() {
 
-}
-
-int main() {
-=======
 void DataMapping::tf_thread() {
     tf::TransformBroadcaster broadcaster;
     tf::Transform transform;
@@ -156,5 +143,4 @@ int main(int argc, char **argv) {
                              static_cast<uint>(map_height / resolution), static_cast<uint>(map_width / resolution),
                              resolution, initial_x, initial_y);
     data_mapping.spin();
->>>>>>> f69d126eaa879bc74065d3c36d83c83ceb618e43
 }
