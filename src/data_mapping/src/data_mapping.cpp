@@ -104,7 +104,7 @@ int main(int argc, char **argv) {
     int hz = 10;
     ros::NodeHandlePtr nh(new ros::NodeHandle);
     int map_height = 4;
-    int map_width = 6;
+    int map_width = 8;
     float resolution = 0.1f;
     float initial_x = -0.8f;
     float initial_y = -2.0f;
