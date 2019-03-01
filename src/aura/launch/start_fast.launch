@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find aura)/launch/tf_ros.launch"/>
+    <include file="$(find aura)/launch/fake_odometry.launch"/>
+    <include file="$(find aura)/launch/depth_detect.launch"/>
+    <include file="$(find aura)/launch/mapping1.launch"/>
+    <include file="$(find aura)/launch/move_base1.launch"/>
+    <include file="$(find aura)/launch/auto_move.launch"/>
+</launch>
