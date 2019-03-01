@@ -13,7 +13,7 @@ import re
 class Robot:
     def __init__(self):
         # 初始化
-        rospy.init_node('turtlebot_robot', anonymous=False)
+        # rospy.init_node('turtlebot_robot', anonymous=False)
 
         rospy.loginfo("Press ctrl+c to stop!")
         rospy.on_shutdown(self.__shutdown)
