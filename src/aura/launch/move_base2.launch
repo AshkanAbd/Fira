@@ -72,8 +72,8 @@
              holonomic_robot: false
 
            #Goal Tolerance Parameters
-             yaw_goal_tolerance: 0.5 #default 0.05
-             xy_goal_tolerance: 0.1 #default 0.1
+             yaw_goal_tolerance: 0.05 #default 0.05
+             xy_goal_tolerance: 0.7 #default 0.1
            #Trajectory Scoring Parameters
              pdist_scale:  1
              gdist_scale:  0.8
