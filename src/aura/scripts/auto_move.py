@@ -75,5 +75,5 @@ class SendGoal:
 
 if __name__ == '__main__':
     auto_move = SendGoal('a', 'aura/base_map')
-    auto_move.set_goal(5, 0)
+    auto_move.set_goal(5.5, 0)
     rospy.spin()

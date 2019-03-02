@@ -280,6 +280,7 @@ void RGBToPointCloud::read_y_data_set() {
     for (int i = 0; i < RGBToPointCloud::y_data_set_size; i++) {
         std::string line;
         std::getline(y_data_set_file, line);
+        if (line[0] == '#') continue;
         data_set_vector.emplace_back(line);
     }
     std::copy(data_set_vector.begin(), data_set_vector.end(), RGBToPointCloud::y_data_set);
@@ -298,6 +299,7 @@ void RGBToPointCloud::read_x_data_set() {
     for (int i = 0; i < RGBToPointCloud::x_data_set_size; i++) {
         std::string line;
         std::getline(x_data_set_file, line);
+        if (line[0] == '#') continue;
         data_set_vector.emplace_back(line);
     }
     std::copy(data_set_vector.begin(), data_set_vector.end(), RGBToPointCloud::x_data_set);
@@ -317,6 +319,7 @@ void RGBToPointCloud::read_depth_data() {
     for (int i = 0; i < RGBToPointCloud::depth_data_set_size; i++) {
         std::string line;
         std::getline(depth_data_set_file, line);
+        if (line[0] == '#') continue;
         depth_vector.emplace_back(line);
     }
     std::copy(depth_vector.begin(), depth_vector.end(), RGBToPointCloud::depth_data_set);

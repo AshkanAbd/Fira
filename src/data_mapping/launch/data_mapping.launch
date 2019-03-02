@@ -6,10 +6,10 @@
         <param name="map_topic" type="string" value="/base_map"/>
         <param name="model_topic" type="string" value="/gazebo/model_states"/>
         <param name="hz" type="int" value="10"/>
-        <param name="height" type="int" value="4"/>
-        <param name="width" type="int" value="6"/>
-        <param name="resolution" type="double" value="0.3"/>
-        <param name="initial_x" type="double" value="-0.8"/>
-        <param name="initial_y" type="double" value="-2"/>
+        <param name="height" type="int" value="3"/>
+        <param name="width" type="int" value="7"/>
+        <param name="resolution" type="double" value="0.05"/>
+        <param name="initial_x" type="double" value="-1"/>
+        <param name="initial_y" type="double" value="-1.5"/>
     </node>
 </launch>

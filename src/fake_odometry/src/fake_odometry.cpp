@@ -97,10 +97,10 @@ void FakeOdometry::initialize(const std::string &odom_topic, const std::string &
 //    FakeOdometry::publish_thread = new std::thread(&FakeOdometry::publisher, this);
     last_time = ros::Time::now();
     current_time = ros::Time::now();
-
+    double dif = 0.0;
 
     // while ROS is not shutdown, in given rate, calculate odometry then publish and broadcast it... :)
-    while (!ros::isShuttingDown()) {
+    while (FakeOdometry::nh->ok()) {
         ros::spinOnce();
         current_time = ros::Time::now();
 
@@ -110,9 +110,10 @@ void FakeOdometry::initialize(const std::string &odom_topic, const std::string &
         FakeOdometry::publish_odom(odom_quat);
         FakeOdometry::seq++;
 
-        double dif = ros::Time::now().toSec() - current_time.toSec();
-        last_time = ros::Time(current_time.toSec() + dif);
+//        dif = ros::Time::now().toSec() - current_time.toSec();
+//        last_time = ros::Time(current_time.toSec() - dif);
         FakeOdometry::rate->sleep();
+        last_time = current_time;
     }
 }
 
