@@ -10,7 +10,6 @@ import move_base_msgs.msg
 import Controller
 import planner
 import math
-import robot
 
 
 class Move:

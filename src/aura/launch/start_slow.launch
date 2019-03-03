@@ -5,5 +5,5 @@
     <include file="$(find aura)/launch/depth_detect.launch"/>
     <include file="$(find aura)/launch/mapping1.launch"/>
     <include file="$(find aura)/launch/move_base2.launch"/>
-    <include file="$(find aura)/launch/auto_move.launch"/>
+    <!--include file="$(find aura)/launch/auto_move.launch"/-->
 </launch>
