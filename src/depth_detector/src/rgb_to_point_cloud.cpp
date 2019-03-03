@@ -66,17 +66,9 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(frame_edge, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     cv::UMat depth_frame(frame.rows, frame.cols, CV_32FC1, cv::Scalar(dNaN));
-//    RGBToPointCloud::sample_depth->copyTo(depth_frame);
-//    cv::Point p1(0, 0), p2(depth_frame.cols - 1, (depth_frame.rows / 2) + (depth_frame.rows / 4));
-//    cv::rectangle(depth_frame, p1, p2, cv::Scalar(depth_detector::dNaN), -1);
-//    p1.x = 0;
-//    p1.y = 0;
-//    p2.x = depth_frame.cols / 3;
-//    p2.y = depth_frame.rows - 1;
-//    cv::rectangle(depth_frame, p1, p2, cv::Scalar(depth_detector::dNaN), -1);
-//    p1.x = depth_frame.cols - (depth_frame.cols / 3);
-//    p2.x = depth_frame.cols - 1;
-//    cv::rectangle(depth_frame, p1, p2, cv::Scalar(depth_detector::dNaN), -1);
+    /* for TC */
+    double min = -1;
+    /* */
     for (int i = 0; i < contours.size(); i++) {
         std::vector<cv::Point> approx;
         double epsilon = 0.02 * cv::arcLength(contours[i], true);
@@ -88,24 +80,26 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
                 max_cos = MAX(max_cos, cos);
             }
             cv::Rect rect = cv::boundingRect(approx);
-//            if (max_cos < 0.3) {
-//                cv::drawContours(frame, contours, i, cv::Scalar(255, 0, 0));
             RGBDataSet rgb_src(0, 0, rect.width, rect.height), rgb_dst;
             if (depth_detector::closest_data(rgb_src, rgb_dst, RGBToPointCloud::y_data_set,
                                              RGBToPointCloud::y_data_set_size)) {
                 depth_detector::DepthDataSet depth_src(fabs(rgb_dst.getObstacle_x() - rgb_dst.getRobot_pose_x()),
                                                        0);
-                //todo for test I disable this if
-//                depth_detector::DepthDataSet depth_dst;
-//                if (depth_detector::closest_data(depth_src, depth_dst, RGBToPointCloud::depth_data_set,
-//                                                 RGBToPointCloud::depth_data_set_size)) {
                 depth_detector::create_depth_image(depth_src, rect, depth_frame);
-//                }
+                /* for TC */
+                if (min == -1) {
+                    min = depth_src.getDistance();
+                } else {
+                    if (min > depth_src.getDistance()) {
+                        min = depth_src.getDistance();
+                    }
+                }
+                /* */
             }
-//            }
 
         }
     }
+    ROS_WARN("%lf\n", min);
     cv_bridge::CvImageConstPtr image1(new cv_bridge::CvImage(img_msg->header, sensor_msgs::image_encodings::TYPE_32FC1,
                                                              depth_frame.getMat(cv::ACCESS_FAST)));
     sensor_msgs::ImagePtr msg = image1->toImageMsg();
