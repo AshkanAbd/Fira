@@ -99,7 +99,7 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
 
         }
     }
-    ROS_WARN("%lf\n", min);
+    ROS_WARN("%lf", min);
     cv_bridge::CvImageConstPtr image1(new cv_bridge::CvImage(img_msg->header, sensor_msgs::image_encodings::TYPE_32FC1,
                                                              depth_frame.getMat(cv::ACCESS_FAST)));
     sensor_msgs::ImagePtr msg = image1->toImageMsg();
@@ -223,8 +223,6 @@ void RGBToPointCloud::read_data_set() {
     RGBToPointCloud::read_x_data_set();
     // Read depth data set
     RGBToPointCloud::read_depth_data();
-    // Read sample depth image
-    RGBToPointCloud::read_sample_depth();
 }
 
 void RGBToPointCloud::create_camera_model(const std::string &camera_info_topic) {
@@ -245,8 +243,8 @@ void RGBToPointCloud::read_camera_info(sensor_msgs::CameraInfo &cam_info) {
     std::ifstream ifs;
     ifs.open(RGBToPointCloud::data_set_dir + "/camera_info.aura", std::ios::in | std::ios::binary);
     if (ifs.fail()) {
-        std::cout << "Error while reading \"camera info\" in " << RGBToPointCloud::data_set_dir
-                  << "/camera_info.aura : " << strerror(errno) << std::endl;
+        ROS_ERROR("Error while reading \"camera info\" in %s/camera_info.aura : %s",
+                  RGBToPointCloud::data_set_dir.data(), strerror(errno));
         exit(0);
     }
     ifs.seekg(0, std::ios::end);
@@ -265,8 +263,8 @@ void RGBToPointCloud::read_y_data_set() {
     std::ifstream y_data_set_file;
     y_data_set_file.open(RGBToPointCloud::data_set_dir + "/data_set_y.aura", std::ifstream::in);
     if (y_data_set_file.fail()) {
-        std::cout << "Error while reading \"y\" data set in " << RGBToPointCloud::data_set_dir << "/data_set_y.aura : "
-                  << strerror(errno) << std::endl;
+        ROS_ERROR("Error while reading \"y\" in %s/data_set_y.aura : %s", RGBToPointCloud::data_set_dir.data(),
+                  strerror(errno));
         exit(0);
     }
     RGBToPointCloud::y_data_set = (RGBDataSet *) malloc(RGBToPointCloud::y_data_set_size * sizeof(RGBDataSet));
@@ -284,8 +282,8 @@ void RGBToPointCloud::read_x_data_set() {
     std::ifstream x_data_set_file;
     x_data_set_file.open(RGBToPointCloud::data_set_dir + "/data_set_x.aura", std::ifstream::in);
     if (x_data_set_file.fail()) {
-        std::cout << "Error while reading \"x\" data set in " << RGBToPointCloud::data_set_dir << "/data_set_x.aura : "
-                  << strerror(errno) << std::endl;
+        ROS_ERROR("Error while reading \"x\" in %s/data_set_x.aura : %s", RGBToPointCloud::data_set_dir.data(),
+                  strerror(errno));
         exit(0);
     }
     RGBToPointCloud::x_data_set = (RGBDataSet *) malloc(RGBToPointCloud::x_data_set_size * sizeof(RGBDataSet));
@@ -303,8 +301,8 @@ void RGBToPointCloud::read_depth_data() {
     std::ifstream depth_data_set_file;
     depth_data_set_file.open(RGBToPointCloud::data_set_dir + "/depth_data.aura", std::ifstream::in);
     if (depth_data_set_file.fail()) {
-        std::cout << "Error while reading \"depth\" data set in " << RGBToPointCloud::data_set_dir
-                  << "/depth_data.aura : " << strerror(errno) << std::endl;
+        ROS_ERROR("Error while reading \"depth\" in %s/depth_data.aura %s", RGBToPointCloud::data_set_dir.data(),
+                  strerror(errno));
         exit(0);
     }
     RGBToPointCloud::depth_data_set = (DepthDataSet *) malloc(
@@ -317,20 +315,6 @@ void RGBToPointCloud::read_depth_data() {
         depth_vector.emplace_back(line);
     }
     std::copy(depth_vector.begin(), depth_vector.end(), RGBToPointCloud::depth_data_set);
-}
-
-void RGBToPointCloud::read_sample_depth() {
-    cv::FileStorage fs;
-    fs.open(RGBToPointCloud::data_set_dir + "/sample_depth.aura", cv::FileStorage::READ);
-    if (!fs.isOpened()) {
-        std::cout << "Error while reading \"sample depth image\" in " << RGBToPointCloud::data_set_dir
-                  << "/sample_depth.aura" << std::endl;
-    }
-    cv::Mat sample;
-    RGBToPointCloud::sample_depth = new cv::UMat;
-    fs["sample_depth"] >> sample;
-    fs.release();
-    sample.copyTo(*RGBToPointCloud::sample_depth);
 }
 
 RGBToPointCloud::RGBToPointCloud() = default;

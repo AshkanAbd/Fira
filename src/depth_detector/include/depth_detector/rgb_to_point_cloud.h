@@ -51,8 +51,6 @@ namespace depth_detector {
 
         virtual inline void read_camera_info(sensor_msgs::CameraInfo &cam_info);
 
-        virtual void read_sample_depth();
-
         virtual void create_camera_model(const std::string &camera_info_topic);
 
     public:
