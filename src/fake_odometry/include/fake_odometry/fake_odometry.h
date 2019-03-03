@@ -21,7 +21,6 @@ namespace fake_odometry {
         ros::Rate *rate;
         nav_msgs::OdometryPtr publish_obj;
         ros::Time current_time, last_time;
-        std::thread *publish_thread;
         std::string odom_frame, child_frame;
         tf::TransformBroadcaster *broadcaster;
         geometry_msgs::TransformStamped *transformStamped;
@@ -50,8 +49,6 @@ namespace fake_odometry {
         virtual void publish_odom(const geometry_msgs::Quaternion &odom_quat);
 
         virtual void broadcast_odom(const geometry_msgs::Quaternion &odom_quat);
-
-        virtual void publisher();
 
         virtual void set_vel_to_pos();
 

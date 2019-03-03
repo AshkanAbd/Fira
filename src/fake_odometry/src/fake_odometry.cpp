@@ -54,25 +54,6 @@ void FakeOdometry::publish_odom(const geometry_msgs::Quaternion &odom_quat) {
     FakeOdometry::odom_publisher->publish(*FakeOdometry::publish_obj);
 }
 
-void FakeOdometry::publisher() {
-    last_time = ros::Time::now();
-    current_time = ros::Time::now();
-    // while ROS is not shutdown, in given rate, calculate odometry then publish and broadcast it... :)
-    while (true) {
-        current_time = ros::Time::now();
-
-        FakeOdometry::set_vel_to_pos();
-        geometry_msgs::Quaternion odom_quat = tf::createQuaternionMsgFromYaw(ang_z);
-        FakeOdometry::broadcast_odom(odom_quat);
-        FakeOdometry::publish_odom(odom_quat);
-        FakeOdometry::seq++;
-
-        double dif = ros::Time::now().toSec() - current_time.toSec();
-        last_time = ros::Time(current_time.toSec() + dif);
-        FakeOdometry::rate->sleep();
-    }
-}
-
 void FakeOdometry::spin() {
     ros::spin();
 }
@@ -94,10 +75,8 @@ void FakeOdometry::initialize(const std::string &odom_topic, const std::string &
     odom_publisher = new ros::Publisher(FakeOdometry::nh->advertise<nav_msgs::Odometry>(odom_topic, 10000));
     cmd_subscriber = new ros::Subscriber(FakeOdometry::nh->subscribe(cmd_topic, 10000, &FakeOdometry::get_cmd, this));
     publish_obj = nav_msgs::OdometryPtr(new nav_msgs::Odometry);
-//    FakeOdometry::publish_thread = new std::thread(&FakeOdometry::publisher, this);
     last_time = ros::Time::now();
     current_time = ros::Time::now();
-    double dif = 0.0;
 
     // while ROS is not shutdown, in given rate, calculate odometry then publish and broadcast it... :)
     while (FakeOdometry::nh->ok()) {
@@ -110,10 +89,8 @@ void FakeOdometry::initialize(const std::string &odom_topic, const std::string &
         FakeOdometry::publish_odom(odom_quat);
         FakeOdometry::seq++;
 
-//        dif = ros::Time::now().toSec() - current_time.toSec();
-//        last_time = ros::Time(current_time.toSec() - dif);
-        FakeOdometry::rate->sleep();
         last_time = current_time;
+        FakeOdometry::rate->sleep();
     }
 }
 
