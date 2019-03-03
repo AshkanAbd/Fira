@@ -1,6 +1,3 @@
-
-#include <pc_mapping/pc_mapping.h>
-
 #include "../include/pc_mapping/pc_mapping.h"
 
 using namespace pc_mapping;
@@ -33,6 +30,7 @@ void PCMapping::initialize(const std::string &map_frame, const std::string &odom
     publish_thread = new std::thread(&PCMapping::publish_callable, this);
     tf_thread = new std::thread(&PCMapping::setup_tf, this);
     pc_subscriber = new ros::Subscriber(nh->subscribe(pc_topic, 10000, &PCMapping::get_point_cloud, this));
+    clear_sub = new ros::Subscriber(nh->subscribe("clear_map", 1000, &PCMapping::empty_sub, this));
 }
 
 void PCMapping::initialize_map(uint height, uint width, float resolution, float initial_x, float initial_y) {
@@ -53,6 +51,11 @@ void PCMapping::initialize_map(uint height, uint width, float resolution, float 
     map_obj->data.resize(map_size);
 }
 
+void PCMapping::empty_sub(const std_msgs::EmptyConstPtr e) {
+    memset(PCMapping::arr_obj, 0, PCMapping::map_size * sizeof(char));
+}
+
+
 void PCMapping::publish_callable() {
     while (ros::ok()) {
         map_obj->header.seq = publish_counter++;
@@ -62,7 +65,6 @@ void PCMapping::publish_callable() {
         rate->sleep();
     }
 }
-
 
 void PCMapping::setup_tf() {
     tf::TransformBroadcaster broadcaster;

@@ -13,6 +13,7 @@
 #include <tf/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <nav_msgs/OccupancyGrid.h>
+#include <std_msgs/Empty.h>
 
 namespace pc_mapping {
     class PCMapping {
@@ -23,7 +24,7 @@ namespace pc_mapping {
         ros::NodeHandlePtr nh;
         ros::Rate *rate;
         ros::Publisher *map_publisher;
-        ros::Subscriber *pc_subscriber;
+        ros::Subscriber *pc_subscriber, *clear_sub;
         tf::TransformListener *listener;
         tf::StampedTransform *stamped_transform;
         char *arr_obj;
@@ -55,6 +56,8 @@ namespace pc_mapping {
         virtual void spin();
 
         virtual void initialize_map(uint height, uint width, float resolution, float initial_x, float initial_y);
+
+        virtual void empty_sub(const std_msgs::EmptyConstPtr e);
     };
 
     void apply_on_map(const char *tmp_map, ulong map_size, char *arr_obj);

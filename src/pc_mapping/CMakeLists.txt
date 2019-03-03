@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
         nav_msgs
         roscpp
         rospy
+        std_msgs
         depth_image_proc
         sensor_msgs
         std_msgs
@@ -29,6 +30,7 @@ catkin_package(
         pc_mapping
 
         CATKIN_DEPENDS
+        std_msgs
         geometry_msgs
         nav_core
         nav_msgs
