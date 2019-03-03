@@ -85,7 +85,7 @@ void PCMapping::get_point_cloud(const sensor_msgs::PointCloud2ConstPtr &msg) {
         listener->lookupTransform(msg->header.frame_id, odom_frame, ros::Time(0), *stamped_transform);
         pcl_ros::transformPointCloud(odom_frame, *msg, *msg1, *listener);
     } catch (std::exception &e) {
-        std::cout << e.what() << std::endl;
+        ROS_ERROR("%s", e.what());
         return;
     }
     int32_t xi = findChannelIndex(msg1, "x");
