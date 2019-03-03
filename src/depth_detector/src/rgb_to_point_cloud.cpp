@@ -99,7 +99,9 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
 
         }
     }
-    ROS_WARN("%lf", min);
+    if (min != -1) {
+        ROS_WARN("Depth = %lf", min);
+    }
     cv_bridge::CvImageConstPtr image1(new cv_bridge::CvImage(img_msg->header, sensor_msgs::image_encodings::TYPE_32FC1,
                                                              depth_frame.getMat(cv::ACCESS_FAST)));
     sensor_msgs::ImagePtr msg = image1->toImageMsg();
@@ -181,7 +183,7 @@ int depth_detector::closest_data(const depth_detector::RGBDataSet &src, depth_de
         best = data_set;
         res = 0;
     }
-    if (best->getImage_height() != src.getImage_height()) {
+    if (abs(best->getImage_height() - src.getImage_height()) > 2) {
         res = 0;
     }
     dst = *best;

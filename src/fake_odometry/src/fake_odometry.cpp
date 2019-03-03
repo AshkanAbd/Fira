@@ -89,8 +89,8 @@ void FakeOdometry::initialize(const std::string &odom_topic, const std::string &
         FakeOdometry::publish_odom(odom_quat);
         FakeOdometry::seq++;
 
-        last_time = current_time;
         FakeOdometry::rate->sleep();
+        last_time = current_time;
     }
 }
 

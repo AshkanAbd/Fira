@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <group ns="aura">
-        <node pkg="depth_detector" type="rgb_to_point_cloud1" name="depth_detector" respawn="true">
+        <node pkg="depth_detector" type="rgb_to_point_cloud1" name="depth_detector" respawn="true" output="screen">
             <param name="rgb_topic" type="string" value="/camera/rgb/image_raw"/>
             <param name="camera_info_topic" type="string" value=""/>
             <param name="depth_image_topic" type="string" value="depth_image"/>
