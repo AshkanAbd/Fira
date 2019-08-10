@@ -14,7 +14,7 @@
 ##### mode: for speed of robot
 <b>pass 1 for fast and 2 for slow</b>
 ##### start: for start quickly or wait for input (recommended)
-<b>pass anything you want it doesn't matter</b>
+<b>pass anything you want for start quickly and don't pass for wait for input</b>
 #### NOTE:
 <b> If you don't pass anything robot speed will fast and wait for input for to start</b>
 
