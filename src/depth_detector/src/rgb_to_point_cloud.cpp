@@ -1,4 +1,9 @@
 #include "../include/depth_detector/rgb_to_point_cloud.h"
+#include <string>
+#include <limits.h>
+#include <unistd.h>
+#include <depth_detector/rgb_to_point_cloud.h>
+
 
 using namespace depth_detector;
 
@@ -66,9 +71,9 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
     std::vector<std::vector<cv::Point>> contours;
     cv::findContours(frame_edge, contours, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE);
     cv::UMat depth_frame(frame.rows, frame.cols, CV_32FC1, cv::Scalar(dNaN));
-    /* for TC */
-    double min = -1;
-    /* */
+//    /* for TC */
+//    double min = -1;
+//    /* */
     for (int i = 0; i < contours.size(); i++) {
         std::vector<cv::Point> approx;
         double epsilon = 0.02 * cv::arcLength(contours[i], true);
@@ -86,22 +91,22 @@ void RGBToPointCloud::get_image(const sensor_msgs::ImageConstPtr &img_msg) {
                 depth_detector::DepthDataSet depth_src(fabs(rgb_dst.getObstacle_x() - rgb_dst.getRobot_pose_x()),
                                                        0);
                 depth_detector::create_depth_image(depth_src, rect, depth_frame);
-                /* for TC */
-                if (min == -1) {
-                    min = depth_src.getDistance();
-                } else {
-                    if (min > depth_src.getDistance()) {
-                        min = depth_src.getDistance();
-                    }
-                }
-                /* */
+//                /* for TC */
+//                if (min == -1) {
+//                    min = depth_src.getDistance();
+//                } else {
+//                    if (min > depth_src.getDistance()) {
+//                        min = depth_src.getDistance();
+//                    }
+//                }
+//                /* */
             }
 
         }
     }
-    if (min != -1) {
-        ROS_WARN("Depth = %lf", min);
-    }
+//    if (min != -1) {
+//        ROS_WARN("Depth = %lf", min);
+//    }
     cv_bridge::CvImageConstPtr image1(new cv_bridge::CvImage(img_msg->header, sensor_msgs::image_encodings::TYPE_32FC1,
                                                              depth_frame.getMat(cv::ACCESS_FAST)));
     sensor_msgs::ImagePtr msg = image1->toImageMsg();
@@ -243,10 +248,12 @@ void RGBToPointCloud::create_camera_model(const std::string &camera_info_topic) 
 
 void RGBToPointCloud::read_camera_info(sensor_msgs::CameraInfo &cam_info) {
     std::ifstream ifs;
-    ifs.open(RGBToPointCloud::data_set_dir + "/camera_info.aura", std::ios::in | std::ios::binary);
+
+    std::string path = get_exec_path() + "/" + RGBToPointCloud::data_set_dir + "/camera_info.aura";
+
+    ifs.open(path, std::ios::in | std::ios::binary);
     if (ifs.fail()) {
-        ROS_ERROR("Error while reading \"camera info\" in %s/camera_info.aura : %s",
-                  RGBToPointCloud::data_set_dir.data(), strerror(errno));
+        ROS_ERROR("Error while reading \"camera info\" in %s/camera_info.aura : %s", path.data(), strerror(errno));
         exit(0);
     }
     ifs.seekg(0, std::ios::end);
@@ -261,11 +268,21 @@ void RGBToPointCloud::read_camera_info(sensor_msgs::CameraInfo &cam_info) {
     ifs.close();
 }
 
+std::string RGBToPointCloud::get_exec_path() {
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    std::string path = std::string(result, (count > 0) ? count : 0);
+    return path.substr(0, path.find_last_of('/'));
+}
+
 void RGBToPointCloud::read_y_data_set() {
     std::ifstream y_data_set_file;
-    y_data_set_file.open(RGBToPointCloud::data_set_dir + "/data_set_y.aura", std::ifstream::in);
+
+    std::string path = get_exec_path() + "/" + RGBToPointCloud::data_set_dir + "/data_set_y.aura";
+
+    y_data_set_file.open(path, std::ifstream::in);
     if (y_data_set_file.fail()) {
-        ROS_ERROR("Error while reading \"y\" in %s/data_set_y.aura : %s", RGBToPointCloud::data_set_dir.data(),
+        ROS_ERROR("Error while reading \"y\" in %s/data_set_y.aura : %s", path.data(),
                   strerror(errno));
         exit(0);
     }
@@ -282,9 +299,12 @@ void RGBToPointCloud::read_y_data_set() {
 
 void RGBToPointCloud::read_x_data_set() {
     std::ifstream x_data_set_file;
-    x_data_set_file.open(RGBToPointCloud::data_set_dir + "/data_set_x.aura", std::ifstream::in);
+
+    std::string path = get_exec_path() + "/" + RGBToPointCloud::data_set_dir + "/data_set_x.aura";
+
+    x_data_set_file.open(path, std::ifstream::in);
     if (x_data_set_file.fail()) {
-        ROS_ERROR("Error while reading \"x\" in %s/data_set_x.aura : %s", RGBToPointCloud::data_set_dir.data(),
+        ROS_ERROR("Error while reading \"x\" in %s/data_set_x.aura : %s", path.data(),
                   strerror(errno));
         exit(0);
     }
@@ -301,9 +321,12 @@ void RGBToPointCloud::read_x_data_set() {
 
 void RGBToPointCloud::read_depth_data() {
     std::ifstream depth_data_set_file;
-    depth_data_set_file.open(RGBToPointCloud::data_set_dir + "/depth_data.aura", std::ifstream::in);
+
+    std::string path = get_exec_path() + "/" + RGBToPointCloud::data_set_dir + "/depth_data.aura";
+
+    depth_data_set_file.open(path, std::ifstream::in);
     if (depth_data_set_file.fail()) {
-        ROS_ERROR("Error while reading \"depth\" in %s/depth_data.aura %s", RGBToPointCloud::data_set_dir.data(),
+        ROS_ERROR("Error while reading \"depth\" in %s/depth_data.aura %s", path.data(),
                   strerror(errno));
         exit(0);
     }

@@ -18,6 +18,9 @@
 
 namespace depth_detector {
     class RGBToPointCloud {
+    private:
+        std::string get_exec_path();
+
     protected:
         ros::NodeHandlePtr nh;
         ros::Subscriber *rgb_sub;
