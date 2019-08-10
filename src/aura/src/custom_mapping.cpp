@@ -20,21 +20,45 @@ void AuraMapping::initialize_map(uint height, uint width, float resolution, floa
     map_obj->info.origin.position.y = initial_y;
     map_obj->info.origin.position.z = 0;
     map_obj->data.resize(map_size);
+    remove_invalid_area();
+}
+
+void AuraMapping::remove_invalid_area() {
+    for (int i = 0; i < 20; ++i) {
+        for (int j = 0; j < 15; ++j) {
+            *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
+        }
+    }
+    for (ulong i = AuraMapping::map_height - 20; i < AuraMapping::map_height; ++i) {
+        for (int j = 0; j < 15; ++j) {
+            *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
+        }
+    }
+    for (int i = 0; i < 20; ++i) {
+        for (ulong j = AuraMapping::map_width - 15; j < AuraMapping::map_width; ++j) {
+            *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
+        }
+    }
+    for (ulong i = AuraMapping::map_height - 20; i < AuraMapping::map_height; ++i) {
+        for (ulong j = AuraMapping::map_width - 15; j < AuraMapping::map_width; ++j) {
+            *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
+        }
+    }
 }
 
 int main(int argc, char **argv) {
     std::string node_name = "aura_slam";
-    std::string map_topic = "/base_map";
+    std::string map_topic = "/aura/base_map";
     std::string pc_topic = "/camera/depth/points";
-    std::string map_frame = "map";
-    std::string odom_frame = "odom";
+    std::string map_frame = /*"/aura/map"*/ "map";
+    std::string odom_frame = /*"/aura/odom"*/"/aura/map";
     int hz = 10;
-    int map_height = 6;
-    int map_width = 10;
+    int map_height = 3;
+    int map_width = 7;
     float resolution = 0.05;
-    float initial_x = -2;
-    float initial_y = -3;
-    double min_tolerance = 0.2;
+    float initial_x = -1;
+    auto initial_y = static_cast<float>(-1.5);
+    double min_tolerance = 0.05;
     double max_tolerance = 10;
     int initial_value = 0;
     ros::init(argc, argv, node_name);
