@@ -2,6 +2,7 @@
 
 ## Compile and run:
 `./compile.bash`
+
 `./setup.bash`
 
 ### To run server, gazebo and world
