@@ -119,7 +119,6 @@ class SendGoal:
                 controller = Controller.Controller('/cmd_vel_mux/input/navi')
                 controller.publish(0, 45, 1)
                 controller.publish(0.5, 0, 2)
-                controller.publish(0, 0, 1)
             else:
                 print("Now wait for object")
                 self.wait_for_obj = True
@@ -138,5 +137,5 @@ class SendGoal:
 if __name__ == '__main__':
     auto_move = SendGoal('a', 'aura/base_map', 'aura/depth_image')
     # auto_move.set_goal((2.3, -1.1), (5.2, 0))
-    auto_move.set_goal((5.5, 0), None)
+    auto_move.set_goal((5.9, 0), None)
     rospy.spin()

@@ -15,6 +15,8 @@ public:
 
     void initialize_map(uint height, uint width, float resolution, float initial_x, float initial_y) override;
 
+    void remove_invalid_area();
+
 };
 
 #endif

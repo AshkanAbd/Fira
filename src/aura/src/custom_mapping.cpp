@@ -25,22 +25,22 @@ void AuraMapping::initialize_map(uint height, uint width, float resolution, floa
 
 void AuraMapping::remove_invalid_area() {
     for (int i = 0; i < 20; ++i) {
-        for (int j = 0; j < 15; ++j) {
+        for (int j = 0; j < 12; ++j) {
             *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
         }
     }
     for (ulong i = AuraMapping::map_height - 20; i < AuraMapping::map_height; ++i) {
-        for (int j = 0; j < 15; ++j) {
+        for (int j = 0; j < 12; ++j) {
             *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
         }
     }
     for (int i = 0; i < 20; ++i) {
-        for (ulong j = AuraMapping::map_width - 15; j < AuraMapping::map_width; ++j) {
+        for (ulong j = AuraMapping::map_width - 12; j < AuraMapping::map_width; ++j) {
             *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
         }
     }
     for (ulong i = AuraMapping::map_height - 20; i < AuraMapping::map_height; ++i) {
-        for (ulong j = AuraMapping::map_width - 15; j < AuraMapping::map_width; ++j) {
+        for (ulong j = AuraMapping::map_width - 12; j < AuraMapping::map_width; ++j) {
             *(arr_obj + (i * AuraMapping::map_width) + j) = 100;
         }
     }
